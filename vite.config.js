@@ -16,7 +16,7 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'modules', //默认modules，如果需要兼容旧浏览器，可以设置为es2015或更低
+    target: 'es2015', // 兼容旧浏览器可设为 es2015，新项目可用 esnext
     rollupOptions: {
 
     }
