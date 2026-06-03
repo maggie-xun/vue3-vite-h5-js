@@ -12,13 +12,15 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    host: '0.0.0.0',
+    port: 3000,
+  },
   build: {
-    target: 'es2015', // 兼容旧浏览器可设为 es2015，新项目可用 esnext
-    rollupOptions: {
-
-    }
-  }
+    target: 'es2015',
+    rollupOptions: {},
+  },
 })
