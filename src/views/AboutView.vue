@@ -1,47 +1,25 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { showToast } from 'vant'
-import { loadAMap } from '@/utils/amap.js'
+import { useAmap } from '@/composables/useAmap.js'
 
 // ========== 高德地图 ==========
 const mapContainer = ref(null)
-const mapReady = ref(false)
-const mapError = ref('')
+const { loaded: mapReady, error: mapError, getMap } = useAmap(mapContainer, {
+  zoom: 12,
+  center: [116.397428, 39.90923],
+})
 
-let mapInstance = null
-
-onMounted(async () => {
-  try {
-    const AMap = await loadAMap()
-
-    // 确保容器有明确尺寸
-    const el = mapContainer.value
-    if (el.offsetHeight === 0) {
-      el.style.height = '300px'
-    }
-
-    mapInstance = new AMap.Map(el, {
-      zoom: 12,
-      center: [116.397428, 39.90923],
-    })
-
-    mapInstance.on('complete', () => {
-      console.log('✅ 地图图层加载完成')
-    })
-
+// 地图就绪后添加标记点
+watch(mapReady, (ready) => {
+  if (ready) {
+    const map = getMap()
+    const AMap = window.AMap
     const marker = new AMap.Marker({
       position: [116.397428, 39.90923],
       title: '北京',
     })
-    mapInstance.add(marker)
-
-    // 强制触发 resize，确保图层渲染
-    setTimeout(() => mapInstance.resize(), 200)
-
-    mapReady.value = true
-  } catch (e) {
-    mapError.value = e.message || '地图加载失败'
-    console.error('地图初始化失败:', e)
+    map.add(marker)
   }
 })
 
